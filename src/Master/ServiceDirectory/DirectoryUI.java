@@ -21,7 +21,7 @@ public class DirectoryUI extends JFrame {
         setResizable(true);
         setTitle("Market Analysis & Algorithmic Trading");
         setVisible(true);
-        //setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     }
 
     private class DirectoryPanel extends JPanel {
@@ -146,16 +146,19 @@ public class DirectoryUI extends JFrame {
             String errorTitle = "SERVICE NOT FOUND";
             String errorMessage = "This is service is coming Soon!, For now try out our 'Historic Analysis' Package!";
 
-            // Live Data Analysis
+            // Live Data Stream
             Button1.addActionListener(e -> ErrorMessage.showPopup(errorMessage,errorTitle));
 
             // Historical Data Analysis
-            Button2.addActionListener(e -> HistoricAnalysis.Launch());
+            Button2.addActionListener(e -> {
+                DirectoryUI.this.setVisible(false);
+                HistoricAnalysis.Launch();
+            });
 
-            // Economic Indicators
+            // Fundamentals Analysis Data
             Button3.addActionListener(e -> ErrorMessage.showPopup(errorMessage,errorTitle));
 
-            // Fundamentals
+            // Economic Indicators
             Button4.addActionListener(e -> ErrorMessage.showPopup(errorMessage,errorTitle));
 
             // Back testing
@@ -167,7 +170,7 @@ public class DirectoryUI extends JFrame {
 
     }
 
-    class ErrorMessage {
+    private class ErrorMessage {
         public static void showPopup(String infoMessage, String titleBar) {
 
             JOptionPane.showMessageDialog(null, infoMessage, "ERROR: " + titleBar,

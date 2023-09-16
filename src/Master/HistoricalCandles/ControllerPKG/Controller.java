@@ -4,75 +4,61 @@ import Master.HistoricalCandles.ModelPKG.Model;
 import Master.HistoricalCandles.ModelPKG.ModelInterface;
 import Master.HistoricalCandles.ViewPKG.ChartInterface;
 import Master.HistoricalCandles.ViewPKG.ChartView;
-import Master.HistoricalCandles.ViewPKG.QueryForm;
-
-import javax.swing.*;
-import java.text.ParseException;
-
-
+import Master.HistoricalCandles.ViewPKG.QueryView;
 
 public class Controller implements QueryInterface, ModelInterface, OhlcvInterface, ChartInterface {
 
-    private QueryForm query_form;
+    private final ProgramLauncher launcher;
+    private QueryView query_form;
     private Model model;
     private ChartView chart;
-    Object[][] Candlesticks;
-    String ticker;
-    String timeframe;
-    int candleQuantity;
+    private Object[][] Candlesticks;
+    private String ticker;
+    private String timeframe;
+    private int candleQuantity;
 
-    public Controller() {
-
+    public Controller(ProgramLauncher launcher) {
+        this.launcher = launcher;
         newQueryForm();
     }
 
     // Creates a new SelectionFrame upon constructor call
     private void newQueryForm() {
-        this.query_form = new QueryForm(this);
-
+        this.query_form = new QueryView(this);
     }
 
-//     // Creates a new ChartView upon constructor call
-//    public void newChart(Object[][] Candlesticks) {
-//        SwingUtilities.invokeLater(() -> {
-//
-//            chart = new ChartView(this);
-//
-//            try {
-//                chart.setCandles(Candlesticks, candleQuantity);
-//            } catch (ParseException e) {
-//                throw new RuntimeException(e);
-//            }
-//
-//        });
-//    }
-
+    // Receives Query data
     @Override
     public void sendControllerQueryData(String ticker, String timeframe, int candleQuantity) {
         this.ticker = ticker;
         this.timeframe = timeframe;
-        this.candleQuantity = candleQuantity;
+        this.candleQuantity = candleQuantity; // save this value to later send to the ChartView chart
 
-        sendModelQueryData(ticker, timeframe, candleQuantity);
+        sendModelQueryData(this.ticker, this.timeframe, this.candleQuantity);
     }
 
+    // Makes the Model 'model' and sends it the Query data
     @Override
     public void sendModelQueryData(String ticker, String timeframe, int candleQuantity) {
         Model model = new Model(this);
         this.model = model;
-        model.sendModelQueryData(ticker, timeframe, candleQuantity);
+        model.sendModelQueryData(this.ticker, this.timeframe, this.candleQuantity);
     }
 
+    // Receives the Candlestick Dates:OHLCV matrix
     @Override
     public void sendControllerOhlcv(Object[][] Candlesticks) {
+        System.out.println("Testing -- Controller received Candlestick data from AlphavantageApi");
         this.Candlesticks = Candlesticks;
+        sendChartOhlcv(this.Candlesticks, this.candleQuantity);
     }
 
+    // Makes the ChartView 'chart', sends it the Dates:OHLCV matrix
     @Override
-    public void sendChartOhlcv(Object[][] Candlesticks, int candleQuantity) throws ParseException {
+    public void sendChartOhlcv(Object[][] Candlesticks, int candleQuantity) {
         ChartView chart = new ChartView(this);
         this.chart = chart;
-        chart.sendChartOhlcv(Candlesticks, candleQuantity);
-        chart.createChart();
+        chart.sendChartOhlcv(this.Candlesticks, this.candleQuantity);
     }
+
 }

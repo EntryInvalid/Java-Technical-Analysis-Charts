@@ -370,38 +370,6 @@ public class SegmentedTimeline implements Timeline, Cloneable, Serializable {
         return timeline;
     }
 
-//    public static void excludeSelectedDays(SegmentedTimeline timeline) throws ParseException {
-//
-//        Date[] holidays = new Date[9];
-//        Date[] customDays = new Date[4];
-//
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-//        holidays[0] = dateFormat.parse("01-01-2023");
-//        holidays[1] = dateFormat.parse("02-20-2023");
-//        holidays[2] = dateFormat.parse("04-07-2023");
-//        holidays[3] = dateFormat.parse("05-29-2023");
-//        holidays[4] = dateFormat.parse("06-19-2023");
-//        holidays[5] = dateFormat.parse("07-04-2023");
-//        holidays[6] =  dateFormat.parse("09-04-2023");
-//        holidays[7] = dateFormat.parse("11-23-2023");
-//        holidays[8] = dateFormat.parse("12-25-2023");
-//
-//        customDays[0] = dateFormat.parse("05-29-2023");
-//        customDays[1] = dateFormat.parse("06-19-2023");
-//        customDays[2] = dateFormat.parse("07-04-2023");
-//        customDays[3] = dateFormat.parse("09-04-2023");
-//
-//        for (Date holiday : holidays) {
-//            timeline.addException(holiday);
-//        }
-//
-//         for (Date customDay : customDays) {
-//            timeline.addException(customDay);
-//        }
-//
-//    }
-//
-
     /**
      * Factory method to create a 15-min, 9:00 AM thought 4:00 PM, Monday
      * through Friday SegmentedTimeline.

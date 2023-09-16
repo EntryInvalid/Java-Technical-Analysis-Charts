@@ -1,13 +1,10 @@
 package Master.HistoricalCandles.ViewPKG.Chart;
 
-
-
-import java.text.ParseException;
 import java.util.*;
 
 public class SegmentedTimelineExtensions extends SegmentedTimeline {
     /**
-     * Constructs a new segmented timeline, optionaly using another segmented
+     * Constructs a new segmented timeline, optionally using another segmented
      * timeline as its base. This chaining of SegmentedTimelines allows further
      * segmentation into smaller timelines.
      * <p>
@@ -23,7 +20,7 @@ public class SegmentedTimelineExtensions extends SegmentedTimeline {
         super(segmentSize, segmentsIncluded, segmentsExcluded);
     }
 
-    public static SegmentedTimeline newTradingDayTimeline(Date[] dates) throws ParseException {
+    public static SegmentedTimeline newTimelineWithGapsRemoved(Date[] dates) {
 
         // Convert the array to an ArrayList and sort it
         List<Date> dateList = Arrays.asList(dates);
@@ -43,7 +40,8 @@ public class SegmentedTimelineExtensions extends SegmentedTimeline {
 
         return timeline;
     }
-
+    
+    
     private static List<Date> findMissingDates(List<Date> dates) {
         Date firstDate = dates.get(0);
         Date lastDate = dates.get(dates.size() - 1);

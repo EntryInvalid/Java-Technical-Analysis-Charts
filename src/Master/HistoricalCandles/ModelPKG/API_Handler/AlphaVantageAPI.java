@@ -10,51 +10,53 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 
-class AlphaVantageAPI implements Master.HistoricalCandles.ModelPKG.API_Handler.Api_Key, OhlcvInterface {
-
-    //private final QueryRunner queryRunner;
+class AlphaVantageAPI implements Api_Key, OhlcvInterface {
+    
     private final Controller controller;
-
+    private final String ticker;
+    private final String timeframe;
+    private final int candleQuantity;
+    private final String function;
+    private final String Outputsize;
     private final String urlString;
-    //public Object[][] Candlesticks;
-
+    
 
     // Constructor that takes apikey and ticker to do the api call, get the data, and parse it.
-    AlphaVantageAPI(Controller controller, String ticker, String timeframe, int numCandles) throws IOException {
-
-        //this.queryRunner = queryRunner;
+    AlphaVantageAPI(Controller controller, String ticker, String timeframe, int candleQuantity) throws IOException {
+        
         this.controller = controller;
+        this.ticker = ticker;
+        this.timeframe = timeframe;
+        this.candleQuantity = candleQuantity;
 
-        Object[][] Candlesticks = new Object[numCandles + 1][6];
-
-        String function;
-
-        // define the function for the api call
-        if (timeframe.equals("day")) {
-            function = "function=TIME_SERIES_DAILY";
-        } else if (timeframe.equals("week")) {
-            function = "function=TIME_SERIES_WEEKLY";
+        Object[][] Candlesticks = new Object[candleQuantity + 1][6];
+        
+        // define the function for the api call based on the 
+        if (this.timeframe.equals("day")) {
+            this.function = "function=TIME_SERIES_DAILY";
+        } else if (this.timeframe.equals("week")) {
+            this.function = "function=TIME_SERIES_WEEKLY";
         } else {
-            function = ("function=TIME_SERIES_INTRADAY&interval=" + timeframe);
+            this.function = ("function=TIME_SERIES_INTRADAY&interval=" + this.timeframe);
         }
 
         // output stays at full for max availability then numCandles limits the amount saved/printed on chart
-        String outputsize = "&outputsize=full";
+        this.Outputsize = "&outputsize=full";
 
-        // GET request URL builder
-        urlString = "https://www.alphavantage.co/query?" + function + "&symbol=" + ticker
-                + "&apikey=" + Api_Key + outputsize + "&datatype=csv";
+        // API call GET request URL builder
+        this.urlString = "https://www.alphavantage.co/query?" + this.function + "&symbol=" + this.ticker
+                + "&apikey=" + this.Api_Key + this.Outputsize + "&datatype=csv";
 
         // for testing
-        System.out.println(urlString);
+        System.out.println(this.urlString);
 
         // establish API connection
-        URL url = new URL(urlString);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
+        URL url = new URL(this.urlString);
+        HttpURLConnection HttpConnect = (HttpURLConnection) url.openConnection();
+        HttpConnect.setRequestMethod("GET");
 
         // Set up the API reader then print output line by line.
-        BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(HttpConnect.getInputStream()));
 
         String line;
         int lineCount = 0;
@@ -75,29 +77,34 @@ class AlphaVantageAPI implements Master.HistoricalCandles.ModelPKG.API_Handler.A
 
                 // copy the array of each line as an element in the 2d array "candleData"
                 for (int i = 0; i < 6; i++) {
-
                     Candlesticks[Counter][i] = parsedData[i];
                     System.out.println(Candlesticks[Counter][i]);
                 }
-                System.out.println("Candlestick #" + (lineCount-1) + " from current day looking back");
+
+                // Printing Candlestick Data
+                System.out.println("Candlestick #" + (lineCount-1) + " counting from present day backwards");
             }
 
-            if (lineCount > numCandles) {
+            // close reader and send data to Controller controller once the correct
+            // amount of Candlesticks data has been recorded
+            if (lineCount > this.candleQuantity) {
                  System.out.println(" ");
                  reader.close();
                  break;
             }
 
-            sendControllerOhlcv(Candlesticks);
-
         }
+        // Pass Date:OHLCV matrix to Controller
+        sendControllerOhlcv(Candlesticks);
 
     }
 
+    // Pass Date:OHLCV matrix to Controller
     @Override
     public void sendControllerOhlcv(Object[][] Candlesticks) {
         controller.sendControllerOhlcv(Candlesticks);
     }
+    
 }
 
 

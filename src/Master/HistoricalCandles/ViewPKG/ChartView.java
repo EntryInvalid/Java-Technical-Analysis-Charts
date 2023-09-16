@@ -1,9 +1,9 @@
 package Master.HistoricalCandles.ViewPKG;
 
 import Master.HistoricalCandles.ControllerPKG.Controller;
-
 import Master.HistoricalCandles.ViewPKG.Chart.CustomCandlestickRenderer;
 import Master.HistoricalCandles.ViewPKG.Chart.CustomDateAxis;
+
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.*;
@@ -15,7 +15,6 @@ import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.DefaultHighLowDataset;
 
-
 import javax.swing.*;
 import java.awt.*;
 import java.text.ParseException;
@@ -25,12 +24,10 @@ import java.util.Date;
 
 public class ChartView extends JFrame implements ChartInterface {
     private final Controller controller;
-    private final ChartView chart;
-
     private Object[][] Candlesticks;
     private int candleQuantity;
 
-    private Date[] Dates = new Date[candleQuantity];
+    private Date[] Dates; // = new Date[candleQuantity];
     private double[] Highs = new double[candleQuantity];
     private double[] Lows = new double[candleQuantity];
     private double[] Opens = new double[candleQuantity];
@@ -40,47 +37,77 @@ public class ChartView extends JFrame implements ChartInterface {
     public ChartView(Controller controller) {
         super();
         this.controller = controller;
-        this.chart = new ChartView(controller);
     }
 
+    // Receive Candlesticks and compose Chart
     @Override
     public void sendChartOhlcv(Object[][] Candlesticks, int candleQuantity) {
-        this.Candlesticks = Candlesticks;
-        this.candleQuantity = candleQuantity;
+        SwingUtilities.invokeLater(() -> {
+
+            // Copy values
+            this.candleQuantity = candleQuantity;
+            this.Candlesticks = Candlesticks;
+
+            this.Dates = new Date[candleQuantity];
+            this.Highs = new double[candleQuantity];
+            this.Lows = new double[candleQuantity];
+            this.Opens = new double[candleQuantity];
+            this.Closes = new double[candleQuantity];
+            this.Volumes = new double[candleQuantity];
+
+            System.out.println("Testing  -- Chart has received Candlestick data from Controller");
+
+
+            // Format the Data
+            try {
+                formatData();
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+
+            // Create Chart
+            try {
+                createChart();
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+
+        });
     }
 
-    //format data from matrix
-    public void setCandles() throws ParseException {
+    // format data from matrix/2D-Array to the proper type from Object
+    public void formatData() throws ParseException {
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         for (int i = 0; i < candleQuantity; i++) {
-            Dates[i] = dateFormat.parse((String) Candlesticks[i][0]);
-            Opens[i] = Double.parseDouble((String) Candlesticks[i][1]);
-            Highs[i] = Double.parseDouble((String) Candlesticks[i][2]);
-            Lows[i] = Double.parseDouble((String) Candlesticks[i][3]);
-            Closes[i] = Double.parseDouble((String) Candlesticks[i][4]);
+            this.Dates[i] = dateFormat.parse((String) Candlesticks[i][0]);
+            this.Opens[i] = Double.parseDouble((String) Candlesticks[i][1]);
+            this.Highs[i] = Double.parseDouble((String) Candlesticks[i][2]);
+            this.Lows[i] = Double.parseDouble((String) Candlesticks[i][3]);
+            this.Closes[i] = Double.parseDouble((String) Candlesticks[i][4]);
             Volumes[i] = Double.parseDouble((String) Candlesticks[i][5]);
         }
-
-        createChart();
     }
 
     public void createChart() throws ParseException {
 
-        Color chartColor = new Color(87, 87, 87);
+        // chart colors
+        //Color chartColor = new Color(87, 87, 87);  //-find where to apply and configure colors
         Color chartOutlineColor = new Color(119,136,150);
 
         // Create datasets
         DefaultHighLowDataset ohlcDataset = new DefaultHighLowDataset("OHLC", Dates, Highs, Lows, Opens, Closes, Volumes);
 
-        // Create X axis for date as a DateAxis
+        // Create Custom DateAxis that skips empty datasets (need to edit to run off of long Objects instead of Date in
+        // order to be dynamically used with different timeframe candlestick charts
         CustomDateAxis xAxis = new CustomDateAxis(this, Dates);
 
         // Create Y axis for price
         NumberAxis yAxis = new NumberAxis("Price");
         yAxis.setAutoRangeIncludesZero(false);
 
-        // Create Candlestick chart
+        // Create CandlestickRenderer and candlestickPlot
         CustomCandlestickRenderer customCandlestickRenderer = new CustomCandlestickRenderer(){};
         XYPlot candlestickPlot = new XYPlot(ohlcDataset, xAxis, yAxis, customCandlestickRenderer);
 
@@ -123,3 +150,4 @@ public class ChartView extends JFrame implements ChartInterface {
     }
 
 }
+

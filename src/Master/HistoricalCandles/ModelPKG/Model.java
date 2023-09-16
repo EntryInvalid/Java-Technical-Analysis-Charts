@@ -7,8 +7,6 @@ import Master.HistoricalCandles.ModelPKG.API_Handler.QueryRunner;
 public class Model implements ModelInterface {
 
     private final Controller controller;
-    //private final Model model;
-
 
     public Model(Controller controller) {
         super();
@@ -21,6 +19,7 @@ public class Model implements ModelInterface {
         queryRunner.ApiCall(ticker, timeframe, candleQunatity);
     }
 
+    // Receive the Query data and pass it into newQueryRunner method as parameters
     @Override
     public void sendModelQueryData(String ticker, String timeframe, int candleQuanitity) {
         newQueryRunner(controller, ticker, timeframe, candleQuanitity);
