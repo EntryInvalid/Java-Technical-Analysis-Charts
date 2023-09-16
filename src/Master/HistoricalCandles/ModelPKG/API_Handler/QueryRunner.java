@@ -1,5 +1,6 @@
 package Master.HistoricalCandles.ModelPKG.API_Handler;
 
+import Master.HistoricalCandles.ControllerPKG.Controller;
 import Master.HistoricalCandles.ModelPKG.Model;
 
 import java.util.logging.Level;
@@ -7,12 +8,13 @@ import java.util.logging.Logger;
 
 public class QueryRunner implements Master.HistoricalCandles.ModelPKG.API_Handler.Api_Key {
 
-    private final Model model;
-    public Object[][] Candlesticks;
+    private final Controller controller;
 
-    public QueryRunner(Model model){
+
+    public QueryRunner(Controller controller){ //}, Model model){
         super();
-        this.model = model;
+        this.controller = controller;
+
     }
 
 
@@ -21,8 +23,7 @@ public class QueryRunner implements Master.HistoricalCandles.ModelPKG.API_Handle
 
         //Create an instance of 'AlphaVantageAPI' to create stock data Matrix. Query info = parameter.
         try {
-            AlphaVantageAPI api = new AlphaVantageAPI(ticker, timeframe, numCandles);
-            Candlesticks = api.Candlesticks;
+            AlphaVantageAPI api = new AlphaVantageAPI(controller, ticker, timeframe, numCandles);
         }
         catch (Exception e) {
             Logger logger = Logger.getLogger(QueryRunner.class.getName());
@@ -30,7 +31,7 @@ public class QueryRunner implements Master.HistoricalCandles.ModelPKG.API_Handle
         }
 
         //forward back to the ControllerPKG to generate the chart
-        model.forwardCandles(Candlesticks);
+        //model.forwardCandles(Candlesticks);
 
     }
 

@@ -2,7 +2,7 @@
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
-!**/src/Master/HistoricalCandles/ModelPKG/API_Handler/Api_Key/
+/Api_Key.Java
 
 ### Eclipse ###
 .apt_generated

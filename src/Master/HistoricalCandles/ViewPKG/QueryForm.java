@@ -38,17 +38,6 @@ public class QueryForm extends JFrame implements QueryInterface{
         controller.sendControllerQueryData(ticker, timeframe, candleQuantity);
     }
 
-//    @Override
-//    public void sendControllerStrings(String ticker, String timeframe) {
-//        controller.sendControllerStrings(ticker, timeframe);
-//    }
-//
-//    @Override
-//    public void sendControllerInt(int candleQuantity) {
-//        controller.sendControllerInt(candleQuantity);
-//    }
-
-
     private class QueryPanel extends JPanel {
 
         private final Controller controller;

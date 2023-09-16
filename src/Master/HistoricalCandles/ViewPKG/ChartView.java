@@ -23,64 +23,55 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-public class ChartView extends JFrame {
+public class ChartView extends JFrame implements ChartInterface {
     private final Controller controller;
+    private final ChartView chart;
 
-    private int numOfCandles;
+    private Object[][] Candlesticks;
+    private int candleQuantity;
 
-    public Date[] date = new Date[numOfCandles];
-    public double[] high = new double[numOfCandles];
-    public double[] low = new double[numOfCandles];
-    public double[] open = new double[numOfCandles];
-    public double[] close = new double[numOfCandles];
-    public double[] volume = new double[numOfCandles];
+    private Date[] Dates = new Date[candleQuantity];
+    private double[] Highs = new double[candleQuantity];
+    private double[] Lows = new double[candleQuantity];
+    private double[] Opens = new double[candleQuantity];
+    private double[] Closes = new double[candleQuantity];
+    private double[] Volumes = new double[candleQuantity];
 
+    public ChartView(Controller controller) {
+        super();
+        this.controller = controller;
+        this.chart = new ChartView(controller);
+    }
 
+    @Override
+    public void sendChartOhlcv(Object[][] Candlesticks, int candleQuantity) {
+        this.Candlesticks = Candlesticks;
+        this.candleQuantity = candleQuantity;
+    }
 
     //format data from matrix
-    public void setCandles(Object[][] candles, int numCandles) throws ParseException {
+    public void setCandles() throws ParseException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-        numOfCandles = numCandles;
-
-        date = new Date[numOfCandles];
-        high = new double[numOfCandles];
-        low = new double[numOfCandles];
-        open = new double[numOfCandles];
-        close = new double[numOfCandles];
-        volume = new double[numOfCandles];
-
-        for (int i = 0; i < numOfCandles; i++) {
-            date[i] = dateFormat.parse((String) candles[i][0]);
-            open[i] = Double.parseDouble((String) candles[i][1]);
-            high[i] = Double.parseDouble((String) candles[i][2]);
-            low[i] = Double.parseDouble((String) candles[i][3]);
-            close[i] = Double.parseDouble((String) candles[i][4]);
-            volume[i] = Double.parseDouble((String) candles[i][5]);
+        for (int i = 0; i < candleQuantity; i++) {
+            Dates[i] = dateFormat.parse((String) Candlesticks[i][0]);
+            Opens[i] = Double.parseDouble((String) Candlesticks[i][1]);
+            Highs[i] = Double.parseDouble((String) Candlesticks[i][2]);
+            Lows[i] = Double.parseDouble((String) Candlesticks[i][3]);
+            Closes[i] = Double.parseDouble((String) Candlesticks[i][4]);
+            Volumes[i] = Double.parseDouble((String) Candlesticks[i][5]);
         }
 
         createChart();
     }
 
-    public ChartView(Controller controller) {
-        super();
-        this.controller = controller;
-    }
-
     public void createChart() throws ParseException {
-
-        Date[] Dates = date;
-        double[] Open = open;
-        double[] High = high;
-        double[] Low = low;
-        double[] Close = close;
-        double[] Volume = volume;
 
         Color chartColor = new Color(87, 87, 87);
         Color chartOutlineColor = new Color(119,136,150);
 
         // Create datasets
-        DefaultHighLowDataset ohlcDataset = new DefaultHighLowDataset("OHLC", Dates, High, Low, Open, Close, Volume);
+        DefaultHighLowDataset ohlcDataset = new DefaultHighLowDataset("OHLC", Dates, Highs, Lows, Opens, Closes, Volumes);
 
         // Create X axis for date as a DateAxis
         CustomDateAxis xAxis = new CustomDateAxis(this, Dates);
@@ -95,8 +86,8 @@ public class ChartView extends JFrame {
 
         // Create volume dataset
         TimeSeries volumeTimeSeries = new TimeSeries("Volume");
-        for (int i = 0; i < numOfCandles; i++) {
-            volumeTimeSeries.add(new Day(Dates[i]), Volume[i]); // Using Day to represent the date
+        for (int i = 0; i < candleQuantity; i++) {
+            volumeTimeSeries.add(new Day(Dates[i]), Volumes[i]); // Using Day to represent the date
         }
         TimeSeriesCollection volumeDataset = new TimeSeriesCollection();
         NumberAxis volumeAxis = new NumberAxis("Volume");

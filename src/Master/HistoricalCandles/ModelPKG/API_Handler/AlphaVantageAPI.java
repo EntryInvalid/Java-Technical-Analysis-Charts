@@ -1,5 +1,8 @@
 package Master.HistoricalCandles.ModelPKG.API_Handler;
 
+import Master.HistoricalCandles.ControllerPKG.Controller;
+import Master.HistoricalCandles.ControllerPKG.OhlcvInterface;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -7,31 +10,32 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 
-class AlphaVantageAPI implements Master.HistoricalCandles.ModelPKG.API_Handler.Api_Key {
+class AlphaVantageAPI implements Master.HistoricalCandles.ModelPKG.API_Handler.Api_Key, OhlcvInterface {
 
-    private final String ticker;
-    private final String timeframe;
+    //private final QueryRunner queryRunner;
+    private final Controller controller;
+
     private final String urlString;
-    public Object[][] Candlesticks;
+    //public Object[][] Candlesticks;
 
 
     // Constructor that takes apikey and ticker to do the api call, get the data, and parse it.
-    AlphaVantageAPI(String ticker, String timeframe, int numCandles) throws IOException {
+    AlphaVantageAPI(Controller controller, String ticker, String timeframe, int numCandles) throws IOException {
 
-        this.ticker = ticker;
-        this.timeframe = timeframe;
+        //this.queryRunner = queryRunner;
+        this.controller = controller;
 
-        Candlesticks = new Object[numCandles + 1][6];
+        Object[][] Candlesticks = new Object[numCandles + 1][6];
 
         String function;
 
         // define the function for the api call
-        if (this.timeframe.equals("day")) {
+        if (timeframe.equals("day")) {
             function = "function=TIME_SERIES_DAILY";
-        } else if (this.timeframe.equals("week")) {
+        } else if (timeframe.equals("week")) {
             function = "function=TIME_SERIES_WEEKLY";
         } else {
-            function = ("function=TIME_SERIES_INTRADAY&interval=" + this.timeframe);
+            function = ("function=TIME_SERIES_INTRADAY&interval=" + timeframe);
         }
 
         // output stays at full for max availability then numCandles limits the amount saved/printed on chart
@@ -84,10 +88,16 @@ class AlphaVantageAPI implements Master.HistoricalCandles.ModelPKG.API_Handler.A
                  break;
             }
 
+            sendControllerOhlcv(Candlesticks);
+
         }
 
     }
 
+    @Override
+    public void sendControllerOhlcv(Object[][] Candlesticks) {
+        controller.sendControllerOhlcv(Candlesticks);
+    }
 }
 
 
