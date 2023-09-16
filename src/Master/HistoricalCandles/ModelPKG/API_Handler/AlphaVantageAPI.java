@@ -11,7 +11,7 @@ import java.net.URL;
 
 
 class AlphaVantageAPI implements Api_Key, OhlcvInterface {
-    
+
     private final Controller controller;
     private final String ticker;
     private final String timeframe;
@@ -19,19 +19,19 @@ class AlphaVantageAPI implements Api_Key, OhlcvInterface {
     private final String function;
     private final String Outputsize;
     private final String urlString;
-    
+
 
     // Constructor that takes apikey and ticker to do the api call, get the data, and parse it.
     AlphaVantageAPI(Controller controller, String ticker, String timeframe, int candleQuantity) throws IOException {
-        
+
         this.controller = controller;
         this.ticker = ticker;
         this.timeframe = timeframe;
         this.candleQuantity = candleQuantity;
 
         Object[][] Candlesticks = new Object[candleQuantity + 1][6];
-        
-        // define the function for the api call based on the 
+
+        // define the function for the api call based on the
         if (this.timeframe.equals("day")) {
             this.function = "function=TIME_SERIES_DAILY";
         } else if (this.timeframe.equals("week")) {
@@ -104,7 +104,5 @@ class AlphaVantageAPI implements Api_Key, OhlcvInterface {
     public void sendControllerOhlcv(Object[][] Candlesticks) {
         controller.sendControllerOhlcv(Candlesticks);
     }
-    
+
 }
-
-

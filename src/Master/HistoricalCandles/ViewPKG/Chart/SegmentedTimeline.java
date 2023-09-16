@@ -44,7 +44,8 @@ import java.util.*;
 
 /*
  * This is a file that used to be in JFreeChart but was deprecated. I was able to find the file online and since it only
- * relies on interfaces that were still needed, I was able to paste it and use it without issue.
+ * relies on interfaces that were still needed, I was able to paste it and use it without issue. Although this is an
+ * open-source Library, I will clarify that you still may need a license
  */
 
 /**

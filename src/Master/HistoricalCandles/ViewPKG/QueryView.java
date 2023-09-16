@@ -33,7 +33,7 @@ public class QueryView extends JFrame implements QueryInterface{
         this.setVisible(true);
     }
 
-    // Pass the Query input data to the Controller controller
+    // Pass the Query input data to the Controller
     @Override
     public void sendControllerQueryData(String ticker, String timeframe, int candleQuantity) {
         controller.sendControllerQueryData(ticker, timeframe, candleQuantity);
@@ -48,7 +48,6 @@ public class QueryView extends JFrame implements QueryInterface{
             super();
             this.controller = controller;
             QueryPanel= new JPanel();
-
             setupPanel();
             setupListeners();
         }
@@ -68,7 +67,7 @@ public class QueryView extends JFrame implements QueryInterface{
         JButton QueryButton;
 
 
-        // List all components -- using gridLayout so fills top to bottom left to right
+        // List all components -- using gridLayout so fills top to bottom & left to right
         private void setupPanel() {
 
             // Panel Configurations
@@ -93,7 +92,6 @@ public class QueryView extends JFrame implements QueryInterface{
             Title1.setHorizontalAlignment(4);
             Title1.setText("Welcome to TA-Charts! ");
             this.add(Title1, grid);
-
 
             // Program Title continued
             Title2 = new JLabel();
@@ -187,12 +185,11 @@ public class QueryView extends JFrame implements QueryInterface{
             QueryButton.setEnabled(true);
             QueryButton.setText("QueryView");
             this.add(QueryButton, grid);
-
         }
 
         private void setupListeners() {
 
-            // read all input values when the 'Query' button is clicked
+            // Read all input values when the 'Query' button is clicked
             QueryButton.addActionListener(e -> {
 
                 System.out.println("Ticker: " + TickerInput.getText());
@@ -200,7 +197,7 @@ public class QueryView extends JFrame implements QueryInterface{
                 System.out.println("Data-Set Size: " + candleQuantityInput.getText() + " Candles");
                 System.out.println("Testing " + toBeDetermined.getText());
 
-                // copy values of first three since fourth field is not currently used
+                // Copy values of first three since fourth field is not currently used
                 ticker = String.valueOf(TickerInput.getText());
                 time = String.valueOf(candleTimeframe.getText());
                 candleQuantity = Integer.parseInt(candleQuantityInput.getText());

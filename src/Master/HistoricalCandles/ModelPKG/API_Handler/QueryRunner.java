@@ -8,19 +8,20 @@ import java.util.logging.Logger;
 public class QueryRunner implements Master.HistoricalCandles.ModelPKG.API_Handler.Api_Key {
 
     private final Controller controller;
+    private AlphaVantageAPI Api;
 
-    public QueryRunner(Controller controller){ //}, Model model){
+    public QueryRunner(Controller controller){
         super();
         this.controller = controller;
 
     }
 
     //Run API call, parse data, and get data as Candlesticks
-    public void ApiCall(String ticker, String timeframe, int numCandles){
+    public void ApiCall(String ticker, String timeframe, int candleQuanitity){
 
         //Create an instance of 'AlphaVantageAPI' to create stock data Date:OHLCV Matrix
         try {
-            AlphaVantageAPI api = new AlphaVantageAPI(controller, ticker, timeframe, numCandles);
+            Api = new AlphaVantageAPI(controller, ticker, timeframe, candleQuanitity);
         }
         catch (Exception e) {
             Logger logger = Logger.getLogger(QueryRunner.class.getName());

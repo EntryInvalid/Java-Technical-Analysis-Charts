@@ -14,6 +14,7 @@
         </entry>
       </map>
     </option>
+    <option name="investigatedFindings" value="true" />
     <option name="openedAppMapEditor" value="true" />
   </component>
 </project>

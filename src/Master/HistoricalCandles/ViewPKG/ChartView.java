@@ -26,7 +26,6 @@ public class ChartView extends JFrame implements ChartInterface {
     private final Controller controller;
     private Object[][] Candlesticks;
     private int candleQuantity;
-
     private Date[] Dates; // = new Date[candleQuantity];
     private double[] Highs = new double[candleQuantity];
     private double[] Lows = new double[candleQuantity];
@@ -42,12 +41,13 @@ public class ChartView extends JFrame implements ChartInterface {
     // Receive Candlesticks and compose Chart
     @Override
     public void sendChartOhlcv(Object[][] Candlesticks, int candleQuantity) {
-        SwingUtilities.invokeLater(() -> {
+
 
             // Copy values
             this.candleQuantity = candleQuantity;
             this.Candlesticks = Candlesticks;
 
+            // Initialization before
             this.Dates = new Date[candleQuantity];
             this.Highs = new double[candleQuantity];
             this.Lows = new double[candleQuantity];
@@ -57,25 +57,23 @@ public class ChartView extends JFrame implements ChartInterface {
 
             System.out.println("Testing  -- Chart has received Candlestick data from Controller");
 
-
+            SwingUtilities.invokeLater(() -> {
             // Format the Data
-            try {
-                formatData();
-            } catch (ParseException e) {
-                throw new RuntimeException(e);
+            try {this.formatData();
+            }
+            catch (ParseException e) {throw new RuntimeException(e);
             }
 
             // Create Chart
-            try {
-                createChart();
-            } catch (ParseException e) {
-                throw new RuntimeException(e);
+            try {this.createChart();
+            }
+            catch (ParseException e) {throw new RuntimeException(e);
             }
 
         });
     }
 
-    // format data from matrix/2D-Array to the proper type from Object
+    // Format data from matrix/2D-Array to the proper type from Object
     public void formatData() throws ParseException {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -86,21 +84,24 @@ public class ChartView extends JFrame implements ChartInterface {
             this.Highs[i] = Double.parseDouble((String) Candlesticks[i][2]);
             this.Lows[i] = Double.parseDouble((String) Candlesticks[i][3]);
             this.Closes[i] = Double.parseDouble((String) Candlesticks[i][4]);
-            Volumes[i] = Double.parseDouble((String) Candlesticks[i][5]);
+            this.Volumes[i] = Double.parseDouble((String) Candlesticks[i][5]);
         }
     }
 
     public void createChart() throws ParseException {
 
-        // chart colors
-        //Color chartColor = new Color(87, 87, 87);  //-find where to apply and configure colors
+        // Chart colors
+        Color chartColor = new Color(16, 15, 15);  //-find where to apply and configure colors
         Color chartOutlineColor = new Color(119,136,150);
+        Color gridColor = new Color(44, 44, 42);
+        Color volumeColor = new Color(69, 255, 233);
 
         // Create datasets
         DefaultHighLowDataset ohlcDataset = new DefaultHighLowDataset("OHLC", Dates, Highs, Lows, Opens, Closes, Volumes);
 
-        // Create Custom DateAxis that skips empty datasets (need to edit to run off of long Objects instead of Date in
-        // order to be dynamically used with different timeframe candlestick charts
+        // Create CustomDateAxis that skips empty datasets (need to edit SegmentedSeriesExtensions.findMissingDates to
+        // run off of longObjects instead of Date in order to be dynamically used with different timeframe candlestick
+        // charts)
         CustomDateAxis xAxis = new CustomDateAxis(this, Dates);
 
         // Create Y axis for price
@@ -110,6 +111,9 @@ public class ChartView extends JFrame implements ChartInterface {
         // Create CandlestickRenderer and candlestickPlot
         CustomCandlestickRenderer customCandlestickRenderer = new CustomCandlestickRenderer(){};
         XYPlot candlestickPlot = new XYPlot(ohlcDataset, xAxis, yAxis, customCandlestickRenderer);
+        candlestickPlot.setBackgroundPaint(chartColor);
+        candlestickPlot.setDomainGridlinePaint(gridColor);
+        candlestickPlot.setRangeGridlinePaint(gridColor);
 
         // Create volume dataset
         TimeSeries volumeTimeSeries = new TimeSeries("Volume");
@@ -117,22 +121,24 @@ public class ChartView extends JFrame implements ChartInterface {
             volumeTimeSeries.add(new Day(Dates[i]), Volumes[i]); // Using Day to represent the date
         }
         TimeSeriesCollection volumeDataset = new TimeSeriesCollection();
-        NumberAxis volumeAxis = new NumberAxis("Volume");
-        XYPlot volumePlot = new XYPlot(volumeDataset, xAxis, volumeAxis, new XYAreaRenderer());
         volumeDataset.addSeries(volumeTimeSeries);
 
         // Separate Logarithmic Volume chart
         LogAxis volumeLogAxis = new LogAxis("Volume");
-        XYPlot volumeLogPlot = new XYPlot(volumeDataset, xAxis, volumeLogAxis, new XYAreaRenderer());
-        volumePlot.setRangeAxisLocation(AxisLocation.BOTTOM_OR_RIGHT);  // use to set volume legend to the right side
+        XYPlot volumeLogPlot = new XYPlot(volumeDataset, xAxis, volumeLogAxis,new XYAreaRenderer());
+        volumeLogPlot.setBackgroundPaint(chartColor);
+        volumeLogPlot.setDomainGridlinePaint(gridColor);
+        volumeLogPlot.setRangeGridlinePaint(gridColor);
+
 
         // Combine all plots
         CombinedDomainXYPlot mainPlot = new CombinedDomainXYPlot(xAxis); // Using the same xAxis for both subplots
         mainPlot.add(candlestickPlot, 3);
         mainPlot.add(volumeLogPlot, 1);
 
+
         // Create the main chart
-        JFreeChart chart = new JFreeChart("Financial Chart", JFreeChart.DEFAULT_TITLE_FONT, mainPlot, true);
+        JFreeChart chart = new JFreeChart("Financial Chart", JFreeChart.DEFAULT_TITLE_FONT, mainPlot, false);
         chart.setBackgroundPaint(chartOutlineColor);
 
         // Set the layout and add to panel
@@ -150,4 +156,3 @@ public class ChartView extends JFrame implements ChartInterface {
     }
 
 }
-

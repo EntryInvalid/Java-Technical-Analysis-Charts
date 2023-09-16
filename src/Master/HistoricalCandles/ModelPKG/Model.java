@@ -13,7 +13,7 @@ public class Model implements ModelInterface {
         this.controller = controller;
     }
 
-    // Create a QueryRunner by giving it the Query input. call the method to query the API
+    // Create a QueryRunner then call the QueryRunner's method to query the API with Query input as parameters
     public void newQueryRunner(Controller controller, String ticker, String timeframe, int candleQunatity) {
         QueryRunner queryRunner = new QueryRunner(controller);
         queryRunner.ApiCall(ticker, timeframe, candleQunatity);

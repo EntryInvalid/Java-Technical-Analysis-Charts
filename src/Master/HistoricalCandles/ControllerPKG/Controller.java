@@ -48,7 +48,6 @@ public class Controller implements QueryInterface, ModelInterface, OhlcvInterfac
     // Receives the Candlestick Dates:OHLCV matrix
     @Override
     public void sendControllerOhlcv(Object[][] Candlesticks) {
-        System.out.println("Testing -- Controller received Candlestick data from AlphavantageApi");
         this.Candlesticks = Candlesticks;
         sendChartOhlcv(this.Candlesticks, this.candleQuantity);
     }

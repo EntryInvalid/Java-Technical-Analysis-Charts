@@ -6,15 +6,16 @@ import java.awt.*;
 
 public abstract class CustomCandlestickRenderer extends CandlestickRenderer {
 
-    Color lightGreen = new Color(171, 218, 127);
+    Color volumeColor = new Color(192, 246, 248);
+
 
     public CustomCandlestickRenderer() {
-        setAutoWidthGap(CandlestickRenderer.WIDTHMETHOD_AVERAGE); // can also use setCandleWidth(); {i'd start at 5}
+        setAutoWidthGap(CandlestickRenderer.WIDTHMETHOD_AVERAGE); // can also use setCandleWidth(); i'd start at 5
         setDrawVolume(true); // set false to remove the overlayed volume bar chart
-        this.setVolumePaint(lightGreen); // change volume bar chart color
+        this.setVolumePaint(volumeColor); // change volume bar chart color
         this.setUseOutlinePaint(true); // changes finish - if set flase tends to outline candlesticks red
-
+        this.setDefaultSeriesVisibleInLegend(false);
+        this.setDefaultItemLabelPaint(volumeColor);
     }
 
 }
-
