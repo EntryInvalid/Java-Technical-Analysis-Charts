@@ -1,16 +1,18 @@
 package Master.HistoricalCandles.ViewPKG;
 
 import Master.HistoricalCandles.ControllerPKG.Controller;
-import Master.HistoricalCandles.ViewPKG.Chart.CustomCandlestickRenderer;
-import Master.HistoricalCandles.ViewPKG.Chart.CustomDateAxis;
-
+import Master.HistoricalCandles.ViewPKG.ChartComponents.CustomCandlestickRenderer;
+import Master.HistoricalCandles.ViewPKG.ChartComponents.CustomDateAxis;
+import Master.HistoricalCandles.ViewPKG.ChartComponents.CustomMenuBar;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.*;
+import org.jfree.chart.axis.AxisLabelLocation;
+import org.jfree.chart.axis.LogAxis;
+import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CombinedDomainXYPlot;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYAreaRenderer;
-import org.jfree.data.time.Day;
+import org.jfree.data.time.Minute;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.DefaultHighLowDataset;
@@ -25,8 +27,10 @@ import java.util.Date;
 public class ChartView extends JFrame implements ChartInterface {
     private final Controller controller;
     private Object[][] Candlesticks;
+    private String ticker;
+    private String timeframe;
     private int candleQuantity;
-    private Date[] Dates; // = new Date[candleQuantity];
+    private Date[] Dates;
     private double[] Highs = new double[candleQuantity];
     private double[] Lows = new double[candleQuantity];
     private double[] Opens = new double[candleQuantity];
@@ -38,33 +42,32 @@ public class ChartView extends JFrame implements ChartInterface {
         this.controller = controller;
     }
 
-    // Receive Candlesticks and compose Chart
+    // Receive Candlesticks and compose ChartComponents
     @Override
-    public void sendChartOhlcv(Object[][] Candlesticks, int candleQuantity) {
+    public void sendChartOhlcv(Object[][] Candlesticks, int candleQuantity, String ticker, String timeframe) {
 
+        // Copy values
+        this.candleQuantity = candleQuantity;
+        this.ticker = ticker;
+        this.timeframe = timeframe;
+        this.Candlesticks = Candlesticks;
 
-            // Copy values
-            this.candleQuantity = candleQuantity;
-            this.Candlesticks = Candlesticks;
+        // Initialization before
+        this.Dates = new Date[candleQuantity];
+        this.Highs = new double[candleQuantity];
+        this.Lows = new double[candleQuantity];
+        this.Opens = new double[candleQuantity];
+        this.Closes = new double[candleQuantity];
+        this.Volumes = new double[candleQuantity];
 
-            // Initialization before
-            this.Dates = new Date[candleQuantity];
-            this.Highs = new double[candleQuantity];
-            this.Lows = new double[candleQuantity];
-            this.Opens = new double[candleQuantity];
-            this.Closes = new double[candleQuantity];
-            this.Volumes = new double[candleQuantity];
-
-            System.out.println("Testing  -- Chart has received Candlestick data from Controller");
-
-            SwingUtilities.invokeLater(() -> {
+        SwingUtilities.invokeLater(() -> {
             // Format the Data
             try {this.formatData();
             }
             catch (ParseException e) {throw new RuntimeException(e);
             }
 
-            // Create Chart
+            // Create ChartComponents
             try {this.createChart();
             }
             catch (ParseException e) {throw new RuntimeException(e);
@@ -76,7 +79,7 @@ public class ChartView extends JFrame implements ChartInterface {
     // Format data from matrix/2D-Array to the proper type from Object
     public void formatData() throws ParseException {
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         for (int i = 0; i < candleQuantity; i++) {
             this.Dates[i] = dateFormat.parse((String) Candlesticks[i][0]);
@@ -90,69 +93,71 @@ public class ChartView extends JFrame implements ChartInterface {
 
     public void createChart() throws ParseException {
 
-        // Chart colors
-        Color chartColor = new Color(16, 15, 15);  //-find where to apply and configure colors
-        Color chartOutlineColor = new Color(119,136,150);
-        Color gridColor = new Color(44, 44, 42);
-        Color volumeColor = new Color(69, 255, 233);
+        // ChartComponents colors
+        Color blackPaint = new Color(0, 0, 0);
+        Color blueGreyPaint = new Color(150, 175, 200);
+        Color gridColor = new Color(33, 33, 122);
 
         // Create datasets
         DefaultHighLowDataset ohlcDataset = new DefaultHighLowDataset("OHLC", Dates, Highs, Lows, Opens, Closes, Volumes);
 
-        // Create CustomDateAxis that skips empty datasets (need to edit SegmentedSeriesExtensions.findMissingDates to
-        // run off of longObjects instead of Date in order to be dynamically used with different timeframe candlestick
-        // charts)
-        CustomDateAxis xAxis = new CustomDateAxis(this, Dates);
+        // Create CustomDateAxis that skips empty datasets
+        CustomDateAxis xAxis = new CustomDateAxis(this, Dates, this.timeframe);
 
         // Create Y axis for price
-        NumberAxis yAxis = new NumberAxis("Price");
+        NumberAxis yAxis = new NumberAxis("Price of Security or Cryptocurrency");
         yAxis.setAutoRangeIncludesZero(false);
+        yAxis.setVerticalTickLabels(false);
+        yAxis.setLabelLocation(AxisLabelLocation.MIDDLE);
 
-        // Create CandlestickRenderer and candlestickPlot
+        // Create candlestickPlot and customCandlestickRenderer
         CustomCandlestickRenderer customCandlestickRenderer = new CustomCandlestickRenderer(){};
         XYPlot candlestickPlot = new XYPlot(ohlcDataset, xAxis, yAxis, customCandlestickRenderer);
-        candlestickPlot.setBackgroundPaint(chartColor);
+        candlestickPlot.setBackgroundPaint(blackPaint);
         candlestickPlot.setDomainGridlinePaint(gridColor);
         candlestickPlot.setRangeGridlinePaint(gridColor);
 
-        // Create volume dataset
+         // Create volume dataset
         TimeSeries volumeTimeSeries = new TimeSeries("Volume");
         for (int i = 0; i < candleQuantity; i++) {
-            volumeTimeSeries.add(new Day(Dates[i]), Volumes[i]); // Using Day to represent the date
+            volumeTimeSeries.add(new Minute(Dates[i]), Volumes[i]); // Using Day to represent the date
         }
         TimeSeriesCollection volumeDataset = new TimeSeriesCollection();
         volumeDataset.addSeries(volumeTimeSeries);
 
-        // Separate Logarithmic Volume chart
-        LogAxis volumeLogAxis = new LogAxis("Volume");
+        // Create Separate Logarithmic Volume chart
+        LogAxis volumeLogAxis = new LogAxis("Logarithmic Volume");
         XYPlot volumeLogPlot = new XYPlot(volumeDataset, xAxis, volumeLogAxis,new XYAreaRenderer());
-        volumeLogPlot.setBackgroundPaint(chartColor);
+        volumeLogPlot.setBackgroundPaint(blackPaint);
         volumeLogPlot.setDomainGridlinePaint(gridColor);
         volumeLogPlot.setRangeGridlinePaint(gridColor);
 
-
         // Combine all plots
         CombinedDomainXYPlot mainPlot = new CombinedDomainXYPlot(xAxis); // Using the same xAxis for both subplots
-        mainPlot.add(candlestickPlot, 3);
+        mainPlot.add(candlestickPlot, 4);
         mainPlot.add(volumeLogPlot, 1);
 
-
         // Create the main chart
-        JFreeChart chart = new JFreeChart("Financial Chart", JFreeChart.DEFAULT_TITLE_FONT, mainPlot, false);
-        chart.setBackgroundPaint(chartOutlineColor);
+        JFreeChart chart = new JFreeChart((ticker + " " + timeframe), JFreeChart.DEFAULT_TITLE_FONT, mainPlot, false);
+        chart.setBackgroundPaint(blueGreyPaint);
 
         // Set the layout and add to panel
         ChartPanel chartPanel = new ChartPanel(chart);
         chartPanel.setPreferredSize(new Dimension(1500, 1000));
         chartPanel.setVerticalAxisTrace(true);
         chartPanel.setHorizontalAxisTrace(true);
+        chartPanel.setMouseWheelEnabled(true);
+        chartPanel.setMouseZoomable(true);
         setLayout(new BorderLayout());
         add(chartPanel, BorderLayout.CENTER);
 
-        //Finalize
+        // JFrame settings
         pack();
-        setLocationRelativeTo(null);
-        setVisible(true);
+        JMenuBar menuBar = CustomMenuBar.createMenuBar();
+        this.setJMenuBar(menuBar);
+        this.setTitle("TA.Charts Prototype");
+        this.setLocationRelativeTo(null);
+        this.setVisible(true);
     }
 
 }

@@ -1,4 +1,4 @@
-package Master.HistoricalCandles.ViewPKG.Chart;
+package Master.HistoricalCandles.ViewPKG.ChartComponents;
 
 import org.jfree.chart.renderer.xy.CandlestickRenderer;
 
@@ -10,7 +10,8 @@ public abstract class CustomCandlestickRenderer extends CandlestickRenderer {
 
 
     public CustomCandlestickRenderer() {
-        setAutoWidthGap(CandlestickRenderer.WIDTHMETHOD_AVERAGE); // can also use setCandleWidth(); i'd start at 5
+        setAutoWidthGap(CandlestickRenderer.WIDTHMETHOD_AVERAGE);
+        setCandleWidth(WIDTHMETHOD_AVERAGE);
         setDrawVolume(true); // set false to remove the overlayed volume bar chart
         this.setVolumePaint(volumeColor); // change volume bar chart color
         this.setUseOutlinePaint(true); // changes finish - if set flase tends to outline candlesticks red

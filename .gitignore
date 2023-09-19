@@ -2,7 +2,7 @@
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
-/Api_Key.Java
+API_Key.Java
 
 ### Eclipse ###
 .apt_generated
@@ -28,3 +28,4 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+/tmp/

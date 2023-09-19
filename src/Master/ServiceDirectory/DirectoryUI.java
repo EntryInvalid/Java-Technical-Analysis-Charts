@@ -19,9 +19,9 @@ public class DirectoryUI extends JFrame {
         setSize(800, 600);
         this.setLocationRelativeTo(null);
         setResizable(true);
-        setTitle("Market Analysis & Algorithmic Trading");
+        setTitle("TA.Charts Prototype");
         setVisible(true);
-        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     private class DirectoryPanel extends JPanel {
@@ -30,7 +30,7 @@ public class DirectoryUI extends JFrame {
             setFocusable(true);
             setOpaque(true);
             setBorder(BorderFactory.createTitledBorder(BorderFactory.createRaisedBevelBorder(),
-                    "ServiceDirectory UI", TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION));
+                    "Services Directory", TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION));
             setupPanel();
             setupListeners();
         }
@@ -69,21 +69,21 @@ public class DirectoryUI extends JFrame {
             Title2.setBackground(darkGrey);
             Title2.setForeground(Green);
             Title2.setHorizontalAlignment(2);
-            Title2.setText("Market Analysis 360!");
+            Title2.setText("the TA Charts Prototype");
             this.add(Title2, grid);
 
             Blurb1 = new JLabel();
             Blurb1.setBackground(darkGrey);
             Blurb1.setForeground(White);
             Blurb1.setHorizontalAlignment(4);
-            Blurb1.setText("This is a passion project meant to aid in my learning; it may ");
+            Blurb1.setText("This is a project for me to test, challenge, and demonstrate ");
             this.add(Blurb1, grid);
 
             Blurb2 = new JLabel();
             Blurb2.setBackground(darkGrey);
             Blurb2.setForeground(White);
             Blurb2.setHorizontalAlignment(2);
-            Blurb2.setText("have some bugs, but it will be developed until it is all smooth");
+            Blurb2.setText("my skill. Striving to be better than TradingView's free version!");
             this.add(Blurb2, grid);
 
             Blurb3 = new JLabel();
@@ -109,13 +109,13 @@ public class DirectoryUI extends JFrame {
             Button2 = new JButton();
             Button2.setBackground(Black);
             Button2.setEnabled(true);
-            Button2.setText("Historical Charts (TA Oriented)");
+            Button2.setText("Historical Analysis");
             this.add(Button2, grid);
 
             Button3 = new JButton();
             Button3.setBackground(Black);
             Button3.setEnabled(true);
-            Button3.setText("Fundamental Analysis Data");
+            Button3.setText("Fundamental Analysis");
             this.add(Button3, grid);
 
             Button4 = new JButton();

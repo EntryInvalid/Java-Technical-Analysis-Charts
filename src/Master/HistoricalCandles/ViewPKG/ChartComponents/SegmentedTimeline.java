@@ -33,13 +33,11 @@
  * Contributor(s):   -;
  *
  */
-package Master.HistoricalCandles.ViewPKG.Chart;
+package Master.HistoricalCandles.ViewPKG.ChartComponents;
 
 import org.jfree.chart.axis.Timeline;
 
 import java.io.Serializable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /*

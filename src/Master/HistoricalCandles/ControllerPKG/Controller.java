@@ -15,6 +15,7 @@ public class Controller implements QueryInterface, ModelInterface, OhlcvInterfac
     private Object[][] Candlesticks;
     private String ticker;
     private String timeframe;
+    private String dataSource;
     private int candleQuantity;
 
     public Controller(ProgramLauncher launcher) {
@@ -29,35 +30,36 @@ public class Controller implements QueryInterface, ModelInterface, OhlcvInterfac
 
     // Receives Query data
     @Override
-    public void sendControllerQueryData(String ticker, String timeframe, int candleQuantity) {
+    public void sendControllerQueryData(String ticker, String timeframe, int candleQuantity, String dataSource) {
         this.ticker = ticker;
         this.timeframe = timeframe;
         this.candleQuantity = candleQuantity; // save this value to later send to the ChartView chart
+        this.dataSource = dataSource;
 
-        sendModelQueryData(this.ticker, this.timeframe, this.candleQuantity);
+        sendModelQueryData(this.ticker, this.timeframe, this.candleQuantity, this.dataSource);
     }
 
     // Makes the Model 'model' and sends it the Query data
     @Override
-    public void sendModelQueryData(String ticker, String timeframe, int candleQuantity) {
+    public void sendModelQueryData(String ticker, String timeframe, int candleQuantity, String dataSource) {
         Model model = new Model(this);
         this.model = model;
-        model.sendModelQueryData(this.ticker, this.timeframe, this.candleQuantity);
+        model.sendModelQueryData(this.ticker, this.timeframe, this.candleQuantity, dataSource);
     }
 
     // Receives the Candlestick Dates:OHLCV matrix
     @Override
     public void sendControllerOhlcv(Object[][] Candlesticks) {
         this.Candlesticks = Candlesticks;
-        sendChartOhlcv(this.Candlesticks, this.candleQuantity);
+        sendChartOhlcv(this.Candlesticks, this.candleQuantity, this.ticker, this.timeframe);
     }
 
     // Makes the ChartView 'chart', sends it the Dates:OHLCV matrix
     @Override
-    public void sendChartOhlcv(Object[][] Candlesticks, int candleQuantity) {
+    public void sendChartOhlcv(Object[][] Candlesticks, int candleQuantity, String ticker, String timeframe) {
         ChartView chart = new ChartView(this);
         this.chart = chart;
-        chart.sendChartOhlcv(this.Candlesticks, this.candleQuantity);
+        chart.sendChartOhlcv(this.Candlesticks, this.candleQuantity, this.ticker, this.timeframe);
     }
 
 }
