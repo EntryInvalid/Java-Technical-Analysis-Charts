@@ -10,5 +10,9 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="jfreechart-1.5.4" level="application" />
+    <orderEntry type="library" exported="" name="PostGreSQL JDBC-42.6.0" level="application" />
+  </component>
+  <component name="SonarLintModuleSettings">
+    <option name="uniqueId" value="57d1d3e8-c3d9-4eb0-91ed-f4fac6912e34" />
   </component>
 </module>

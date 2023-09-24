@@ -14,7 +14,7 @@ import java.net.URL;
 // Problem with Intra-day Crypto Api Calls (??Reorder keywords for crypto call??) //
 ////////////////////////////////////////////////////////////////////////////////////
 
-class AlphaVantageAPI implements Api_Key, OhlcvInterface {
+class AlphaVantageAPI implements ApiKey, OhlcvInterface {
 
     private final Controller controller;
     private final String ticker;
@@ -119,7 +119,7 @@ class AlphaVantageAPI implements Api_Key, OhlcvInterface {
 
         // API call GET request URL builder
         this.urlString = "https://www.alphavantage.co/query?" + this.function + "&symbol=" + this.ticker
-                + "&apikey=" + this.Api_Key + this.Outputsize + "&datatype=csv";
+                + "&apikey=" + this.ApiKey + this.Outputsize + "&datatype=csv";
 
         // For testing
         System.out.println(this.urlString);

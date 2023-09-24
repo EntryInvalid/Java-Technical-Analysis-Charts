@@ -1,0 +1,13 @@
+name: "TA.Charts_Prototype-master"
+appmap_dir: "tmp/appmap"
+packages:
+- path: "Master.HistoricalCandles.ControllerPKG"
+- path: "Master.HistoricalCandles.ModelPKG"
+- path: "Master.HistoricalCandles.ViewPKG"
+- path: "Master.ServiceDirectory"
+- path: "TODO_PackagesNotYetBuilt.AlgorithmicTrading"
+- path: "TODO_PackagesNotYetBuilt.Backtesting"
+- path: "TODO_PackagesNotYetBuilt.EconomicIndicators"
+- path: "TODO_PackagesNotYetBuilt.Fundamentals"
+- path: "TODO_PackagesNotYetBuilt.LiveData"
+- path: "TODO_PackagesNotYetBuilt.NewsSentiment"

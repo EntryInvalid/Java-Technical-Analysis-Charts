@@ -5,7 +5,7 @@ import Master.HistoricalCandles.ControllerPKG.Controller;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class QueryRunner implements Master.HistoricalCandles.ModelPKG.API_Handler.Api_Key {
+public class QueryRunner implements ApiKey {
 
     private final Controller controller;
     private AlphaVantageAPI Api;

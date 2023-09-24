@@ -228,7 +228,7 @@ public class QueryView extends JFrame implements QueryInterface{
                 System.out.println(""); // For console View
                 System.out.println("----------------------------------------------------------------------------------------------------"); // For console view
                 System.out.println("Ticker: " + tickerInput.getText());
-                System.out.println("Timeframe: " + timeframeInput.getSelectedItem() + " per Candle");
+                System.out.println("Timeframe: " + timeframeInput.getSelectedItem());
                 System.out.println("Data-Set Size: " + candleQuantityInput.getText() + " Candles");
                 System.out.println("Data-Source: " + dataSourceInput.getSelectedItem());
                 System.out.println("----------------------------------------------------------------------------------------------------"); // For console view

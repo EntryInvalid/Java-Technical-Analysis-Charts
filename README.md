@@ -8,7 +8,7 @@ Charts (they will be more TA-Oriented than Live Charts). If all goes well I may 
 as well.
 
 
-## !! The API Key can be entered @ Master.HistoricalCandles.ModelPKG.API_Handler.Api_Key !! 
+## !! The API Key can be entered @ Master.HistoricalCandles.ModelPKG.API_Handler.ApiKey !! 
 
 
 # Dependencies
